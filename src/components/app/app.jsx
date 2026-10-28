@@ -49,7 +49,7 @@ class App extends Component {
 
   addItem = (name, salary) => {
     if (
-      /[|\\/~^:,;?!&%$@*+]/gi.test(name) === false &&
+      /[|\\/~^:,;?!&%$@*+0-9]/gi.test(name) === false &&
       name.length >= 3 &&
       salary.length > 0
     ) {
@@ -67,6 +67,8 @@ class App extends Component {
           data: newArr,
         };
       });
+    } else {
+      window.alert("Невірно введено імʼя або З/П");
     }
   };
 
@@ -131,6 +133,20 @@ class App extends Component {
     this.setState({ filter });
   };
 
+  onUpdateValue = (id, salary) => {
+    this.setState(({ data }) => ({
+      data: data.map((item) => {
+        if (item.id === id) {
+          return {
+            ...item,
+            salary: salary,
+          };
+        }
+        return item;
+      }),
+    }));
+  };
+
   render() {
     const { data, term, filter } = this.state;
     const visibleData = this.filterPost(this.searchEmp(data, term), filter);
@@ -147,6 +163,7 @@ class App extends Component {
           <AppFilter filter={filter} onFilterSelect={this.onFilterSelect} />
         </div>
         <EmployeesList
+          onUpdateValue={this.onUpdateValue}
           data={visibleData}
           onDelete={this.deleteItem}
           onToggleProp={this.onToggleProp}
